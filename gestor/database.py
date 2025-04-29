@@ -2,22 +2,39 @@ import os
 import platform
 import re
 
-def limpiar_pantalla():
-    os.system('cls') if platform.system() == "Windows" else os.system('clear')
+class Cliente:
+    def __init__(self, dni, nombre, apellido):
+        self.dni = dni
+        self.nombre = nombre
+        self.apellido = apellido
 
-def leer_texto(longitud_min=0, longitud_max=100, mensaje=None):
-    print(mensaje) if mensaje else None
-    while True:
-        texto = input("> ")
-        if longitud_min <= len(texto) <= longitud_max:
-            return texto
+class Clientes:
+    lista = []
 
-def dni_valido(dni, lista):
-    if not re.match('[0-9]{2}[A-Z]$', dni):
-        print("DNI incorrecto, debe cumplir el formato.")
-        return False
-    for cliente in lista:
-        if cliente.dni == dni:
-            print("DNI utilizado por otro cliente.")
-            return False
-    return True
+    @classmethod
+    def crear(cls, dni, nombre, apellido):
+        cliente = Cliente(dni, nombre, apellido)
+        cls.lista.append(cliente)
+        return cliente
+
+    @classmethod
+    def buscar(cls, dni):
+        for cliente in cls.lista:
+            if cliente.dni == dni:
+                return cliente
+        return None
+
+    @classmethod
+    def modificar(cls, dni, nombre, apellido):
+        cliente = cls.buscar(dni)
+        if cliente:
+            cliente.nombre = nombre
+            cliente.apellido = apellido
+        return cliente
+
+    @classmethod
+    def borrar(cls, dni):
+        cliente = cls.buscar(dni)
+        if cliente:
+            cls.lista.remove(cliente)
+        return cliente
